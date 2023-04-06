@@ -1,0 +1,48 @@
+﻿@using ClimateControl.Web.Blazor.Services
+@inject ReadingService _readingService
+
+<div>
+    <RadzenChart Style="height:400px;">
+        <RadzenLineSeries Smooth="true" Data="@temp" CategoryProperty="Date" Title="Temp &deg;F" LineType="LineType.Dashed" ValueProperty="Value">
+            <RadzenMarkers MarkerType="MarkerType.Square" />
+            <RadzenSeriesDataLabels Visible="false" />
+        </RadzenLineSeries>
+        <RadzenLineSeries Smooth="true" Data="@humidity" CategoryProperty="Date" Title="Humidity %" ValueProperty="Value">
+            <RadzenMarkers MarkerType="MarkerType.Circle" />
+            <RadzenSeriesDataLabels Visible="false" />
+        </RadzenLineSeries>
+        <RadzenCategoryAxis Padding="20" Formatter="@FormatDate" Visible="false" />
+        <RadzenValueAxis Min="40" Max="100" Step="10">
+            <RadzenGridLines Visible="true" />
+        </RadzenValueAxis>
+    </RadzenChart>
+</div>
+
+@code {
+    private class DataItem
+    {
+        public string? Date { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    private Reading[]? readings;
+    private DataItem[]? temp;
+    private DataItem[]? humidity;
+
+    protected override void OnInitialized()
+    {
+        readings = _readingService.GetReadings().Where((x,i) => i % 10 == 0).ToArray();
+        temp = readings != null ?
+            readings.Select(r => new DataItem { Date = r.ReadDate.ToString(), Value = r.TemperatureFahrenheit }).ToArray() :
+            new DataItem[0];
+        humidity = readings != null ?
+            readings.Select(r => new DataItem { Date = r.ReadDate.ToString(), Value = r.HumidityPercent }).ToArray() :
+            new DataItem[0];
+    }
+
+    private string FormatDate(object value)
+    {
+        if (value == null) return string.Empty;
+        return Convert.ToDateTime(value).ToLocalTime().ToString("MM/dd/yyyy h:mm A");
+    }
+}

@@ -1,0 +1,18 @@
+﻿@page "/"
+
+<PageTitle>ClimateControl</PageTitle>
+
+@using ClimateControl.Web.Blazor.Components
+@using ClimateControl.Web.Blazor.Services
+@using System.Globalization
+
+<RadzenTabs>
+    <Tabs>
+        <RadzenTabsItem Text="Readings">
+            <ReadingsGraph></ReadingsGraph>
+        </RadzenTabsItem>
+        <RadzenTabsItem Text="Settings">
+            <Configuration></Configuration>
+        </RadzenTabsItem>
+    </Tabs>
+</RadzenTabs>

@@ -1,0 +1,29 @@
+﻿@using ClimateControl.Web.Blazor.Services
+@inject SettingsService _settingsService
+
+<div>
+    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Temperature &#176;F</RadzenText>
+    <RadzenNumeric @bind-Value=@settings.SetTemperatureFahrenheit class="w-20" />
+    <br />
+    <br />
+    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Humidity %</RadzenText>
+    <RadzenNumeric @bind-Value=@settings.SetHumidityPercent class="w-20" />
+    <br />
+    <br />
+    <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Read Interval Minutes</RadzenText>
+    <RadzenNumeric @bind-Value=@settings.ReadIntervalMinutes class="w-20" />
+    <br />
+    <br />
+    <RadzenButton Text="Save" Click=@(args => OnClick()) />
+</div>
+
+@code {
+    private Settings? settings;
+
+    private void OnClick() => _settingsService.SaveSettings(settings);
+
+    protected override void OnInitialized()
+    {
+        settings = _settingsService.GetSettings();
+    }
+}
